@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Dataset
+data/dataset/
+data/plant_village/
+
+# Trained models
+models/
+*.keras
+*.h5
+
+# Test images
+test_leaf.jpg
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
