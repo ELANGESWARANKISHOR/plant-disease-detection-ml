@@ -64,10 +64,18 @@ def predict_text(text):
 
     probabilities = nlp_model.predict_proba([text])[0]
 
+    probability_dict = {
+        class_name: float(probability)
+        for class_name, probability in zip(
+            nlp_model.classes_,
+            probabilities
+        )
+    }
+
     predicted_index = list(
         nlp_model.classes_
     ).index(prediction)
 
     confidence = probabilities[predicted_index]
 
-    return prediction, confidence
+    return prediction, confidence, probability_dict

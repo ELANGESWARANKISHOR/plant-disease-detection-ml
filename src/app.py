@@ -45,15 +45,58 @@ def predict_image(image):
 
     image_array = np.expand_dims(image_array, axis=0)
 
-    predictions = model.predict(image_array, verbose=0)
+    predictions = model.predict(image_array, verbose=0)[0]
 
-    predicted_index = np.argmax(predictions[0])
+    predicted_index = np.argmax(predictions)
 
     predicted_class = CLASS_NAMES[predicted_index]
 
-    confidence = predictions[0][predicted_index]
+    confidence = predictions[predicted_index]
 
-    return predicted_class, confidence
+    probabilities = {
+        class_name: float(probability)
+        for class_name, probability in zip(
+            CLASS_NAMES,
+            predictions
+        )
+    }
+
+    return predicted_class, confidence, probabilities
+
+def fuse_predictions(image_probabilities, text_probabilities):
+
+    IMAGE_WEIGHT = 0.7
+    TEXT_WEIGHT = 0.3
+
+    final_probabilities = {}
+
+    for class_name in CLASS_NAMES:
+
+        image_probability = image_probabilities.get(
+            class_name,
+            0.0
+        )
+
+        text_probability = text_probabilities.get(
+            class_name,
+            0.0
+        )
+
+        final_probability = (
+            IMAGE_WEIGHT * image_probability
+            + TEXT_WEIGHT * text_probability
+        )
+
+        final_probabilities[class_name] = final_probability
+
+    final_class = max(
+        final_probabilities,
+        key=final_probabilities.get
+    )
+
+    final_confidence = final_probabilities[final_class]
+
+    return final_class, final_confidence, final_probabilities
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -61,9 +104,14 @@ def home():
 
     image_prediction = None
     image_confidence = None
+    image_probabilities = None
 
     text_prediction = None
     text_confidence = None
+    text_probabilities = None
+
+    final_prediction = None
+    final_confidence = None
 
     if request.method == "POST":
 
@@ -76,9 +124,11 @@ def home():
 
                 image = Image.open(image_file)
 
-                image_prediction, image_confidence = predict_image(
-                    image
-                )
+                (
+                    image_prediction,
+                    image_confidence,
+                    image_probabilities
+                ) = predict_image(image)
 
                 image_confidence = round(
                     float(image_confidence) * 100,
@@ -86,16 +136,38 @@ def home():
                 )
 
         # NLP prediction
-        symptoms = request.form.get("symptoms", "").strip()
+        symptoms = request.form.get(
+            "symptoms",
+            ""
+        ).strip()
 
         if symptoms:
 
-            text_prediction, text_confidence = predict_text(
-                symptoms
-            )
+            (
+                text_prediction,
+                text_confidence,
+                text_probabilities
+            ) = predict_text(symptoms)
 
             text_confidence = round(
                 float(text_confidence) * 100,
+                2
+            )
+
+        # Multimodal fusion
+        if image_probabilities and text_probabilities:
+
+            (
+                final_prediction,
+                final_confidence,
+                _
+            ) = fuse_predictions(
+                image_probabilities,
+                text_probabilities
+            )
+
+            final_confidence = round(
+                float(final_confidence) * 100,
                 2
             )
 
@@ -104,9 +176,10 @@ def home():
         image_prediction=image_prediction,
         image_confidence=image_confidence,
         text_prediction=text_prediction,
-        text_confidence=text_confidence
+        text_confidence=text_confidence,
+        final_prediction=final_prediction,
+        final_confidence=final_confidence
     )
 
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)

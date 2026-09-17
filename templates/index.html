@@ -80,6 +80,29 @@
 
     {% endif %}
 
+    {% if final_prediction %}
+
+        <hr>
+
+        <h2>Final Multimodal Diagnosis</h2>
+
+        <p>
+            Disease:
+            <strong>{{ final_prediction }}</strong>
+        </p>
+
+        <p>
+            Confidence:
+            <strong>{{ final_confidence }}%</strong>
+        </p>
+
+        <p>
+            Fusion:
+            <strong>70% Image + 30% Text</strong>
+        </p>
+
+    {% endif %}
+
 </body>
 
 </html>
