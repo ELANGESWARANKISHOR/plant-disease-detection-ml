@@ -2,8 +2,11 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
+
     <title>Plant Disease Detection</title>
+
 </head>
 
 <body>
@@ -12,32 +15,67 @@
 
     <form method="POST" enctype="multipart/form-data">
 
-        <label>Select a plant leaf image:</label>
+        <h2>1. Upload Leaf Image</h2>
+
+        <input
+            type="file"
+            name="image"
+            accept="image/*"
+        >
 
         <br><br>
 
-        <input type="file" name="image" accept="image/*" required>
+        <h2>2. Describe Symptoms</h2>
+
+        <textarea
+            name="symptoms"
+            rows="5"
+            cols="60"
+            placeholder="Example: The potato leaves have dark brown spots that are spreading quickly."
+        ></textarea>
 
         <br><br>
 
-        <button type="submit">Predict Disease</button>
+        <button type="submit">
+            Analyze Plant
+        </button>
 
     </form>
 
-    {% if prediction %}
+
+    {% if image_prediction %}
 
         <hr>
 
-        <h2>Prediction Result</h2>
+        <h2>Image Analysis</h2>
 
         <p>
-            Disease:
-            <strong>{{ prediction }}</strong>
+            Prediction:
+            <strong>{{ image_prediction }}</strong>
         </p>
 
         <p>
             Confidence:
-            <strong>{{ confidence }}%</strong>
+            <strong>{{ image_confidence }}%</strong>
+        </p>
+
+    {% endif %}
+
+
+    {% if text_prediction %}
+
+        <hr>
+
+        <h2>Text Analysis</h2>
+
+        <p>
+            Prediction:
+            <strong>{{ text_prediction }}</strong>
+        </p>
+
+        <p>
+            Confidence:
+            <strong>{{ text_confidence }}%</strong>
         </p>
 
     {% endif %}

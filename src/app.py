@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 from PIL import Image
 from flask import Flask, render_template, request
-
+from nlp_classifier import predict_text
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -59,29 +59,52 @@ def predict_image(image):
 @app.route("/", methods=["GET", "POST"])
 def home():
 
-    prediction = None
-    confidence = None
+    image_prediction = None
+    image_confidence = None
+
+    text_prediction = None
+    text_confidence = None
 
     if request.method == "POST":
 
-        if "image" not in request.files:
-            return render_template("index.html")
+        # Image prediction
+        if "image" in request.files:
 
-        image_file = request.files["image"]
+            image_file = request.files["image"]
 
-        if image_file.filename == "":
-            return render_template("index.html")
+            if image_file.filename != "":
 
-        image = Image.open(image_file)
+                image = Image.open(image_file)
 
-        prediction, confidence = predict_image(image)
+                image_prediction, image_confidence = predict_image(
+                    image
+                )
 
-        confidence = round(float(confidence) * 100, 2)
+                image_confidence = round(
+                    float(image_confidence) * 100,
+                    2
+                )
+
+        # NLP prediction
+        symptoms = request.form.get("symptoms", "").strip()
+
+        if symptoms:
+
+            text_prediction, text_confidence = predict_text(
+                symptoms
+            )
+
+            text_confidence = round(
+                float(text_confidence) * 100,
+                2
+            )
 
     return render_template(
         "index.html",
-        prediction=prediction,
-        confidence=confidence
+        image_prediction=image_prediction,
+        image_confidence=image_confidence,
+        text_prediction=text_prediction,
+        text_confidence=text_confidence
     )
 
 

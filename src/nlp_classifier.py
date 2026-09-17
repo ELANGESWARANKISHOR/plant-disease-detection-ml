@@ -1,83 +1,73 @@
+import os
+
 import pandas as pd
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import classification_report, confusion_matrix
 
 
-DATA_PATH = "data/nlp/symptom_data.csv"
+BASE_DIR = os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))
+)
 
-
-# Load dataset
-data = pd.read_csv(DATA_PATH)
-
-X = data["text"]
-y = data["label"]
-
-
-# Split the dataset
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.25,
-    random_state=42,
-    stratify=y
+DATA_PATH = os.path.join(
+    BASE_DIR,
+    "data",
+    "nlp",
+    "symptom_data.csv"
 )
 
 
-# Create NLP pipeline
-model = Pipeline([
-    (
-        "tfidf",
-        TfidfVectorizer(
-            lowercase=True,
-            ngram_range=(1, 2)
-        )
-    ),
-    (
-        "classifier",
-        LogisticRegression(
-            max_iter=1000
-        )
-    )
-])
-
-
-# Train
-model.fit(X_train, y_train)
-
-
-# Evaluate
-predictions = model.predict(X_test)
-
-print("\nNLP Model Evaluation")
-print("--------------------")
-
-print(classification_report(y_test, predictions))
-
-print("Confusion Matrix:")
-print(confusion_matrix(y_test, predictions))
-
-
-# Test example
-example = [
-    "The potato leaves have dark brown spots and the damage is spreading"
+CLASS_NAMES = [
+    "early_blight",
+    "healthy",
+    "late_blight"
 ]
 
-prediction = model.predict(example)
-probabilities = model.predict_proba(example)
 
-print("\nExample Prediction")
-print("------------------")
-print("Text:", example[0])
-print("Prediction:", prediction[0])
+def train_nlp_model():
 
-print("\nClass probabilities:")
+    data = pd.read_csv(DATA_PATH)
 
-for class_name, probability in zip(
-    model.classes_,
-    probabilities[0]
-):
-    print(f"{class_name}: {probability:.2%}")
+    X = data["text"]
+    y = data["label"]
+
+    model = Pipeline([
+        (
+            "tfidf",
+            TfidfVectorizer(
+                lowercase=True,
+                ngram_range=(1, 2)
+            )
+        ),
+        (
+            "classifier",
+            LogisticRegression(
+                max_iter=1000
+            )
+        )
+    ])
+
+    model.fit(X, y)
+
+    return model
+
+
+# Train the NLP model once when the application starts
+nlp_model = train_nlp_model()
+
+
+def predict_text(text):
+
+    prediction = nlp_model.predict([text])[0]
+
+    probabilities = nlp_model.predict_proba([text])[0]
+
+    predicted_index = list(
+        nlp_model.classes_
+    ).index(prediction)
+
+    confidence = probabilities[predicted_index]
+
+    return prediction, confidence
