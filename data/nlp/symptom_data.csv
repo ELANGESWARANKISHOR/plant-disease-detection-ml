@@ -1,0 +1,37 @@
+text,label
+"Potato leaves have small brown spots on the surface",early_blight
+"Brown circular lesions are visible on the older leaves",early_blight
+"The leaves have dark brown spots with concentric rings",early_blight
+"Older potato leaves are showing brown circular spots",early_blight
+"Brown lesions with ring patterns are appearing on the leaves",early_blight
+"Several leaves have small dark brown patches",early_blight
+"The lower leaves are developing brown spots",early_blight
+"Potato foliage has brown lesions surrounded by yellow areas",early_blight
+"Dark spots with circular patterns are spreading across the leaves",early_blight
+"The plant has brown leaf spots that look like target rings",early_blight
+"Small irregular brown lesions are visible on potato leaves",early_blight
+"The older foliage contains many brown circular lesions",early_blight
+"Leaves are green with no visible spots or lesions",healthy
+"The potato plant looks healthy and the leaves are green",healthy
+"No disease symptoms are visible on the leaves",healthy
+"The leaves are green and appear normal",healthy
+"Potato foliage is healthy with no brown or dark lesions",healthy
+"The plant has fresh green leaves without visible damage",healthy
+"Leaves have an even green color and no signs of disease",healthy
+"The potato leaves look normal and healthy",healthy
+"No spots, lesions, or discoloration can be seen on the leaves",healthy
+"The plant appears healthy with clean green foliage",healthy
+"Healthy potato leaves show no visible infection",healthy
+"The foliage is green and there are no unusual marks",healthy
+"Potato leaves have large dark brown irregular lesions",late_blight
+"Dark water-soaked spots are appearing on the potato leaves",late_blight
+"Large brown patches are spreading quickly across the leaves",late_blight
+"The leaves have dark lesions that become worse during wet weather",late_blight
+"Brown black patches are visible on several potato leaves",late_blight
+"Large dark spots are spreading from the edges of the leaves",late_blight
+"The plant has rapidly spreading dark brown leaf damage",late_blight
+"Leaves are developing large irregular dark lesions",late_blight
+"Dark brown lesions have appeared after periods of heavy rain",late_blight
+"The potato foliage has large brown patches with a water soaked appearance",late_blight
+"Dark lesions are spreading quickly across the plant",late_blight
+"Several leaves have large blackish brown areas of damage",late_blight
